@@ -34,18 +34,14 @@ class App extends Component {
         // Will 'susbscribe' for this userRef, so itwill listen for any changes.
         userRef.onSnapshot((snapShot) => {
           /*  From 'snapShot' obj. will get data (with .get()) related to this user. setSate is async f. */
-          this.setState(
-            {
-              currentUser: {
-                id: snapShot.id,
-                // Spreading data (snapShot just represents values, but it is not the data)
-                ...snapShot.data(),
-              },
+          this.setState({
+            currentUser: {
+              id: snapShot.id,
+              // Spreading data (snapShot just represents values, but it is not the data)
+              ...snapShot.data(),
             },
-            () => console.log(this.state)
-          );
+          });
         });
-        // console.log(this.state);
       } else {
         // If userAuth object is null. When user loggs-out, current user will be set to null.
         this.setState({ currentUser: userAuth });
