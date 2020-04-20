@@ -7,3 +7,11 @@ a {
   text-decoration: none;
   color: black;
 }
+
+/* '*' - universal selector (applies for every element) */
+/*  'box-sizing' value is set in all browsers... 
+    'box-sizing' is a css property. Because of it, margins paddings and borders affects overall size of component. To avoid it, need to set 'box-sizing: border-box;'
+*/
+* {
+  box-sizing: border-box;
+}

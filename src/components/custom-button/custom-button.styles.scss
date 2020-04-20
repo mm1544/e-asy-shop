@@ -19,4 +19,19 @@
     color: black;
     border: 1px solid black;
   }
+
+  /*
+  Will apply styling to the element that has both classes: 'custom-button' & 'google-sign-in'.
+
+  If would use '.google-sign-in' (without &) then styling would be applyed to the child element of 'custom-button' with a class 'google-sign-in'.
+  */
+  &.google-sign-in {
+    background-color: #4285f4;
+    color: white;
+
+    &:hover {
+      background-color: #357ae8;
+      border: none;
+    }
+  }
 }

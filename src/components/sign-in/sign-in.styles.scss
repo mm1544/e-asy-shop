@@ -1,10 +1,19 @@
 .sign-in {
   // 30% of view width
-  width: 30vw;
+  width: 380px;
   display: flex;
   flex-direction: column;
 
   .title {
     margin: 10px 0;
   }
+
+  .buttons {
+    display: flex;
+    justify-content: space-between;
+  }
 }
+
+/*  'box-sizing' value is set in all browsers... 
+    'box-sizing' is a css property. Because of it, margins paddings and borders affects overall size of component. To avoid it, need to set 'box-sizing: border-box;'
+*/

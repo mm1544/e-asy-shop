@@ -2,9 +2,13 @@ import React from 'react';
 import './custom-button.styles.scss';
 
 // Pulling-of the children of props...
-/* If "type='submit'" will be passed to CustomButton, then 'button' receive get it. "children" ?? */
-const CustomButton = ({ children, ...otherProps }) => (
-  <button className='custom-button' {...otherProps}>
+/* If "type='submit'" will be passed to CustomButton, then 'button' receive get it. "children" ??
+Will conditionaly render a className, based on a prop 'isGoogleSignIn'*/
+const CustomButton = ({ children, isGoogleSignIn, ...otherProps }) => (
+  <button
+    className={`${isGoogleSignIn ? 'google-sign-in' : ''} custom-button`}
+    {...otherProps}
+  >
     {children}
   </button>
 );
