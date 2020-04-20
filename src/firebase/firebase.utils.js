@@ -33,10 +33,10 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
 
   if (!snapShot.exists) {
     const { displayName, email } = userAuth;
-    // Importatnt to know when entry was made.
+    //To know when entry was made.
     const createdAt = new Date();
 
-    // If doesn't exist, will create it. To create will use document reference object.
+    // If doesn't exist, will create it. To create will use document reference object (userRef).
     try {
       await userRef.set({
         displayName,
