@@ -15,6 +15,45 @@ const config = {
   measurementId: 'G-GQ5RZRR6XK',
 };
 
+// Will take 'userAuth' object (that we got back from 'auth' library) and store it inside of DB. Making API request therefore it is async function. 'additionalData' will be passed as an object.
+export const createUserProfileDocument = async (userAuth, additionalData) => {
+  // If 'userAuth' object doesn't exist, then return from function.
+  if (!userAuth) return;
+
+  /*
+  Using 'userAuth.uid'. Want to see if userAuth object, that we get from auth library, already exists in the database.
+
+   First getting document reference object.
+  */
+
+  const userRef = firestore.doc(`users/${userAuth.uid}`);
+
+  // ...then getting document snapshot object. It will allow us to decide whether there exist data
+  const snapShot = await userRef.get();
+
+  if (!snapShot.exists) {
+    const { displayName, email } = userAuth;
+    // Importatnt to know when entry was made.
+    const createdAt = new Date();
+
+    // If doesn't exist, will create it. To create will use document reference object.
+    try {
+      await userRef.set({
+        displayName,
+        email,
+        createdAt,
+        // Spreading anny other additional data
+        ...additionalData,
+      });
+    } catch (err) {
+      console.log('error creating user ', err.message);
+    }
+  }
+
+  // Return 'userRef' obj. because userRef may be needed for later.
+  return userRef;
+};
+
 firebase.initializeApp(config);
 
 // Will be able to use 'auth' constant anywhere related to authentication
