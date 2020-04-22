@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom';
-
+import { connect } from 'react-redux';
 import './App.css';
 
 import HomePage from './pages/homepage/homepage.component';
@@ -9,20 +9,17 @@ import Header from './components/header/header.component';
 import SignInAndSignUpPage from './pages/sign-in-and-sign-up/sign-in-and-sign-up.component';
 // For authentification
 import { auth, createUserProfileDocument } from './firebase/firebase.utils';
+// Action...
+import { setCurrentUser } from './redux/user/user.actions';
 
 class App extends Component {
-  /* Need to store a state of a user in app, so when user loggs-in (witg Google or email+password), need to store that user on the app state. It will allow to pass to other components. Want to be able to access current user's object through-out the app. */
-  constructor() {
-    super();
-
-    this.state = { currentUser: null };
-  }
-
   unsubscribeFromAuth = null;
 
   // Handles authentication and user persistance
   componentDidMount() {
-    /* Connection to Firebase is open as long as App component is mounted on DOM. Because it is open subscription, we need to CLOSE subscription when component unmounts (don't want memory leaks in application). Passing a user state as a parameter. */
+    const { setCurrentUser } = this.props;
+
+    /* Connection to Firebase is open as long as App component is mounted on DOM. Because it is open subscription, we need to CLOSE subscription when component unmounts (don't want memory leaks in application). */
 
     // 'unsubscribeFromAuth' will !!give back a function!!, which when called, will close the auth service subscription. Need to close it whenever component unmounts (use in 'componentWillUnmount').
     this.unsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
@@ -33,18 +30,17 @@ class App extends Component {
         //Will need userRef to check if DB updated at that reference with any new data. Will get back a snapshot obj.
         // Will 'susbscribe' for this userRef, so itwill listen for any changes.
         userRef.onSnapshot((snapShot) => {
-          /*  From 'snapShot' obj. will get data (with .get()) related to this user. setSate is async f. */
-          this.setState({
-            currentUser: {
-              id: snapShot.id,
-              // Spreading data (snapShot just represents values, but it is not the data)
-              ...snapShot.data(),
-            },
+          /*  From 'snapShot' obj. will get data (with .get()) related to this user. setSate is async f. 
+          Whenever user snapShot updates, setting user.reducer with a new obj.*/
+          setCurrentUser({
+            id: snapShot.id,
+            // Spreading data
+            ...snapShot.data(),
           });
         });
       } else {
         // If userAuth object is null. When user loggs-out, current user will be set to null.
-        this.setState({ currentUser: userAuth });
+        setCurrentUser(userAuth);
       }
     });
   }
@@ -57,7 +53,7 @@ class App extends Component {
   render() {
     return (
       <div>
-        <Header currentUser={this.state.currentUser} />
+        <Header />
         {/* When Route finds the match in the path, Switch makes sure that nothing else is rendered, but that ONE Route*/}
         <Switch>
           <Route exact path='/' component={HomePage} />
@@ -69,4 +65,14 @@ class App extends Component {
   }
 }
 
-export default App;
+const mapDispatchToProps = (dispatch) => ({
+  /*
+  // In redux "dispatch" is the 'way' to pass an action obj. to the reducer.
+  Will call action 'setCurrentUser' and will pass to it 'user'. Since 'setCurrentUser' returning the object, this obj. will be dispatched.
+  */
+
+  setCurrentUser: (user) => dispatch(setCurrentUser(user)),
+});
+
+// Will connect App to the outcome of the initial 'connect' call using 'mapDispatchToProps'.
+export default connect(null, mapDispatchToProps)(App);

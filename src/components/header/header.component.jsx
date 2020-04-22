@@ -1,5 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+// 'connect' is a higher order component, it modifies our component so to be able to access Redux state
+import { connect } from 'react-redux';
 // For authentication
 import { auth } from '../../firebase/firebase.utils';
 import './header.styles.scss';
@@ -34,4 +36,9 @@ const Header = ({ currentUser }) => {
   );
 };
 
-export default Header;
+// Function that allows to access the 'state', where the 'state' is our root-reducer (!?)
+const mapStateToProps = (state) => ({
+  currentUser: state.user.currentUser,
+});
+
+export default connect(mapStateToProps)(Header);
