@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import './App.css';
 
@@ -19,18 +19,19 @@ class App extends Component {
   componentDidMount() {
     const { setCurrentUser } = this.props;
 
-    /* Connection to Firebase is open as long as App component is mounted on DOM. Because it is open subscription, we need to CLOSE subscription when component unmounts (don't want memory leaks in application). */
-
-    // 'unsubscribeFromAuth' will !!give back a function!!, which when called, will close the auth service subscription. Need to close it whenever component unmounts (use in 'componentWillUnmount').
+    /* Connection to Firebase is open as long as App component is mounted on DOM. Because it is open subscription, we need to CLOSE subscription when component unmounts (don't want memory leaks in application).
+    ### 'unsubscribeFromAuth' will !!give back a function!!, which when called, will close the auth service subscription. Need to close it whenever component unmounts (use in 'componentWillUnmount').
+    */
     this.unsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
       if (userAuth) {
         // Getting back userRef object
         const userRef = await createUserProfileDocument(userAuth);
 
-        //Will need userRef to check if DB updated at that reference with any new data. Will get back a snapshot obj.
-        // Will 'susbscribe' for this userRef, so itwill listen for any changes.
+        /*
+        Will need userRef to check if DB updated at that reference with any new data. Will get back a snapshot obj.
+        # Will 'susbscribe' for this userRef, so it will listen for any changes.*/
         userRef.onSnapshot((snapShot) => {
-          /*  From 'snapShot' obj. will get data (with .get()) related to this user. setSate is async f. 
+          /*  From 'snapShot' obj. will get data (with .get()) related to this user.
           Whenever user snapShot updates, setting user.reducer with a new obj.*/
           setCurrentUser({
             id: snapShot.id,
@@ -57,13 +58,29 @@ class App extends Component {
         {/* When Route finds the match in the path, Switch makes sure that nothing else is rendered, but that ONE Route*/}
         <Switch>
           <Route exact path='/' component={HomePage} />
-          <Route exact path='/shop' component={ShopPage} />
-          <Route exact path='/signin' component={SignInAndSignUpPage} />
+          <Route path='/shop' component={ShopPage} />
+          {/* If user is logged-in, he will be redirected and will not see SignInAndSignUpPage page */}
+          <Route
+            exact
+            path='/signin'
+            render={() =>
+              this.props.currentUser ? (
+                <Redirect to='/' />
+              ) : (
+                <SignInAndSignUpPage />
+              )
+            }
+          />
         </Switch>
       </div>
     );
   }
 }
+
+// Gets currentUser from Redux state and add it to the props. From state destructuring userReducer (??)
+const mapStateToProps = ({ user }) => ({
+  currentUser: user.currentUser,
+});
 
 const mapDispatchToProps = (dispatch) => ({
   /*
@@ -75,4 +92,4 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 // Will connect App to the outcome of the initial 'connect' call using 'mapDispatchToProps'.
-export default connect(null, mapDispatchToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);
