@@ -7,8 +7,10 @@ import { auth } from '../../firebase/firebase.utils';
 import './header.styles.scss';
 // React syntax to import svg
 import { ReactComponent as Logo } from '../../assets/crown.svg';
+import CartIcon from '../cart-icon/cart-icon.component';
+import CartDropdown from '../cart-dropdown/cart-dropdown.component';
 
-const Header = ({ currentUser }) => {
+const Header = ({ currentUser, hidden }) => {
   return (
     <div className='header'>
       <Link className='logo-container' to='/'>
@@ -31,14 +33,18 @@ const Header = ({ currentUser }) => {
             SIGN IN
           </Link>
         )}
+        <CartIcon />
       </div>
+      {hidden ? null : <CartDropdown />}
     </div>
   );
 };
 
-// Function that allows to access the 'state', where the 'state' is our root-reducer (!?)
-const mapStateToProps = (state) => ({
-  currentUser: state.user.currentUser,
+// Function that allows to access the 'state', where the 'state' is our root-reducer. Destructuring nested values: 'state.user.currentUser' = '{user: {currentUser}}'
+const mapStateToProps = ({ user: { currentUser }, cart: { hidden } }) => ({
+  // Same as 'currentUser: currentUser'
+  currentUser,
+  hidden,
 });
 
 export default connect(mapStateToProps)(Header);
