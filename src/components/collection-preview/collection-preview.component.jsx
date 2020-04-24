@@ -11,10 +11,10 @@ const CollectionPreview = ({ title, items }) => {
       <div className='preview'>
         {/* Will be called whenever the component gets re-renderd and may slow down the preformance */}
         {items
-          // To pre-view only first 4 items
+          // To preview only first 4 items
           .filter((item, idx) => idx < 4)
-          .map(({ id, ...otherItemProps }) => (
-            <CollectionItem key={id} {...otherItemProps} />
+          .map((item) => (
+            <CollectionItem key={item.id} item={item} />
           ))}
       </div>
     </div>
