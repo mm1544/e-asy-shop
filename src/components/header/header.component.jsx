@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { createStructuredSelector } from 'reselect';
 // 'connect' is a higher order component, it modifies our component so to be able to access Redux state
 import { connect } from 'react-redux';
 // For authentication
@@ -9,6 +10,8 @@ import './header.styles.scss';
 import { ReactComponent as Logo } from '../../assets/crown.svg';
 import CartIcon from '../cart-icon/cart-icon.component';
 import CartDropdown from '../cart-dropdown/cart-dropdown.component';
+import { selectCurrentUser } from '../../redux/user/user.selectors';
+import { selectCartHidden } from '../../redux/cart/cart.selectors';
 
 const Header = ({ currentUser, hidden }) => {
   return (
@@ -40,11 +43,11 @@ const Header = ({ currentUser, hidden }) => {
   );
 };
 
-// Function that allows to access the 'state', where the 'state' is our root-reducer. Destructuring nested values: 'state.user.currentUser' = '{user: {currentUser}}'
-const mapStateToProps = ({ user: { currentUser }, cart: { hidden } }) => ({
-  // Same as 'currentUser: currentUser'
-  currentUser,
-  hidden,
+// Function that allows to access the 'state', where the 'state' is our root-reducer.
+const mapStateToProps = createStructuredSelector({
+  // Selectors to memoize 'currentUser' and 'hidden'
+  currentUser: selectCurrentUser,
+  hidden: selectCartHidden,
 });
 
 export default connect(mapStateToProps)(Header);

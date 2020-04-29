@@ -1,6 +1,8 @@
 import React from 'react';
 // To get access to the Items in the 'cart'
 import { connect } from 'react-redux';
+// Helps using multiple selectors
+import { createStructuredSelector } from 'reselect';
 import CustomButton from '../custom-button/custom-button.component';
 import './cart-dropdown.styles.scss';
 import CartItem from '../cart-item/cart-item.component';
@@ -18,9 +20,9 @@ const CartDropdown = ({ cartItems }) => (
   </div>
 );
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = createStructuredSelector({
   // Selector gives memoized value of 'cartItems'
-  cartItems: selectCartItems(state),
+  cartItems: selectCartItems,
 });
 
 export default connect(mapStateToProps)(CartDropdown);

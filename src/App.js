@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import './App.css';
+// Helps using multiple selectors
+import { createStructuredSelector } from 'reselect';
 
 import HomePage from './pages/homepage/homepage.component';
 import ShopPage from './pages/shop/shop.component';
@@ -11,6 +13,7 @@ import SignInAndSignUpPage from './pages/sign-in-and-sign-up/sign-in-and-sign-up
 import { auth, createUserProfileDocument } from './firebase/firebase.utils';
 // Action...
 import { setCurrentUser } from './redux/user/user.actions';
+import { selectCurrentUser } from './redux/user/user.selectors';
 
 class App extends Component {
   unsubscribeFromAuth = null;
@@ -77,9 +80,9 @@ class App extends Component {
   }
 }
 
-// Gets currentUser from Redux state and add it to the props. From state destructuring userReducer (??)
-const mapStateToProps = ({ user }) => ({
-  currentUser: user.currentUser,
+// Gets currentUser from Redux state and adds it to the props.
+const mapStateToProps = createStructuredSelector({
+  currentUser: selectCurrentUser,
 });
 
 const mapDispatchToProps = (dispatch) => ({
