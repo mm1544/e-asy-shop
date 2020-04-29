@@ -8,6 +8,7 @@ const INITIAL_STATE = {
 
 const { TOGGLE_CART_HIDDEN, ADD_ITEM } = CartActionTypes;
 
+// Allways returning a new obj.
 const cartReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case TOGGLE_CART_HIDDEN:
