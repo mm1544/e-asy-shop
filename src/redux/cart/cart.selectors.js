@@ -3,7 +3,7 @@ import { createSelector } from 'reselect';
 /*
     // Eventhough will use only 'cartItems' from the state, 'mapStateToProps' will be called each time when the state will be accessed (from any other component).
 
-     It is called 'selector'. Will need memoisation (cashing of selector's valuses) to not rerender this particular object if the value of 'cartItems' in the state will not be changed. Can achieve memoisation by using library 'reselect'. 'reselect' allows to write selectors in such a way, so that if the properties that we are pulling from the state ('cartItems') has the same value, it will not pass them into our component (it will pass the old value) and React component will not re-render(!!!).
+     To make it more efficient, will use 'selector'. Need to use memoisation (cashing of selector's valuses) to not re-render this particular object if the value of 'cartItems' in the state will not be changed. Can achieve memoisation by using library 'reselect'. 'reselect' allows to write selectors in such a way, so that if the properties that we are pulling from the state ('cartItems') has the same value, it will not pass them into our component (it will pass the old value) and React component will not re-render(!!!).
      
      reduce() is a native array method in JS
     */
@@ -39,4 +39,12 @@ export const selectCartItemsCount = createSelector(
         accumulatedQuantity + cartItem.quantity,
       0
     )
+);
+
+export const selectCartTotal = createSelector([selectCartItems], (cartItems) =>
+  cartItems.reduce(
+    (accumulatedQuantity, cartItem) =>
+      accumulatedQuantity + cartItem.quantity * cartItem.price,
+    0
+  )
 );

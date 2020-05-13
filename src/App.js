@@ -7,6 +7,7 @@ import { createStructuredSelector } from 'reselect';
 
 import HomePage from './pages/homepage/homepage.component';
 import ShopPage from './pages/shop/shop.component';
+import CheckoutPage from './pages/checkout/checkout.component';
 import Header from './components/header/header.component';
 import SignInAndSignUpPage from './pages/sign-in-and-sign-up/sign-in-and-sign-up.component';
 // For authentification
@@ -32,7 +33,7 @@ class App extends Component {
 
         /*
         Will need userRef to check if DB updated at that reference with any new data. Will get back a snapshot obj.
-        # Will 'susbscribe' for this userRef, so it will listen for any changes.*/
+        # Will 'susbscribe' for this userRef, so it will 'listen' for any changes.*/
         userRef.onSnapshot((snapShot) => {
           /*  From 'snapShot' obj. will get data (with .get()) related to this user.
           Whenever user snapShot updates, setting user.reducer with a new obj.*/
@@ -61,7 +62,9 @@ class App extends Component {
         {/* When Route finds the match in the path, Switch makes sure that nothing else is rendered, but that ONE Route*/}
         <Switch>
           <Route exact path='/' component={HomePage} />
+          {/* Not using 'exact' because it will be eg. '/shop/hats'  */}
           <Route path='/shop' component={ShopPage} />
+          <Route exact path='/checkout' component={CheckoutPage} />
           {/* If user is logged-in, he will be redirected and will not see SignInAndSignUpPage page */}
           <Route
             exact
