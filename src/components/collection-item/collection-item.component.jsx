@@ -1,5 +1,3 @@
-// Don't need state in this component, therefore it is functional component
-
 import React from 'react';
 import { connect } from 'react-redux';
 import './collection-item.styles.scss';

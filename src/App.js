@@ -62,7 +62,7 @@ class App extends Component {
         {/* When Route finds the match in the path, Switch makes sure that nothing else is rendered, but that ONE Route*/}
         <Switch>
           <Route exact path='/' component={HomePage} />
-          {/* Not using 'exact' because it will be eg. '/shop/hats'  */}
+          {/* Not using 'exact' because it will be eg. '/shop/hats'. Route automatically passes 'match', 'location' and 'history' to the component. */}
           <Route path='/shop' component={ShopPage} />
           <Route exact path='/checkout' component={CheckoutPage} />
           {/* If user is logged-in, he will be redirected and will not see SignInAndSignUpPage page */}

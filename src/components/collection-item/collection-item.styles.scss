@@ -1,5 +1,6 @@
 .collection-item {
-  width: 22%;
+  // '%' is a percentage of containing div's width. 'vw' is a percentage of an actual window
+  width: 22vw;
   display: flex;
   flex-direction: column;
   height: 350px;
