@@ -7,8 +7,13 @@ import { persistStore } from 'redux-persist';
 
 import rootReducer from './root-reducer';
 
-// Array of middlewares
-const middlewares = [logger];
+// Array of middlewares.
+const middlewares = [];
+
+// Need to apply 'logger' only in development mode.
+if (process.env.NODE_ENV === 'development') {
+  middlewares.push(logger);
+}
 
 /*
 Creates a store (will pass it to the Provider in index.js, it will allow to access 'store' to the rest of the application).
