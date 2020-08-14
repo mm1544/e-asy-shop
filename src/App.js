@@ -11,16 +11,22 @@ import CheckoutPage from './pages/checkout/checkout.component';
 import Header from './components/header/header.component';
 import SignInAndSignUpPage from './pages/sign-in-and-sign-up/sign-in-and-sign-up.component';
 // For authentification
-import { auth, createUserProfileDocument } from './firebase/firebase.utils';
+import {
+  auth,
+  createUserProfileDocument,
+  //addCollectionAndDocuments,
+} from './firebase/firebase.utils';
 // Action...
 import { setCurrentUser } from './redux/user/user.actions';
 import { selectCurrentUser } from './redux/user/user.selectors';
+//import { selectCollectionsForPreview } from './redux/shop/shop.selectors';
 
 class App extends Component {
   unsubscribeFromAuth = null;
 
   // Handles authentication and user persistance
   componentDidMount() {
+    //const { setCurrentUser, collectionsArray } = this.props;
     const { setCurrentUser } = this.props;
 
     /* Connection to Firebase is open as long as App component is mounted on DOM. Because it is open subscription, we need to CLOSE subscription when component unmounts (don't want memory leaks in application).
@@ -46,6 +52,11 @@ class App extends Component {
       } else {
         // If userAuth object is null. When user loggs-out, current user will be set to null.
         setCurrentUser(userAuth);
+        // Instead of passing a full array, will pass a new array with an objects with the data that we want to ceep.
+        // addCollectionAndDocuments(
+        //   'collections',
+        //   collectionsArray.map(({ title, items }) => ({ title, items }))
+        // );
       }
     });
   }
@@ -86,6 +97,7 @@ class App extends Component {
 // Gets currentUser from Redux state and adds it to the props.
 const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser,
+  //collectionsArray: selectCollectionsForPreview,
 });
 
 const mapDispatchToProps = (dispatch) => ({
