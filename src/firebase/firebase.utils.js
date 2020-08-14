@@ -54,6 +54,59 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
   return userRef;
 };
 
+// Moving Shop data to the Firebase. Takes in collection-name (collectionKEY) and obj. that we are going to add.
+export const addCollectionAndDocuments = async (
+  collectionKey,
+  objectsToAdd
+) => {
+  // Creating collection. Firebase is giving back a ref obj.
+  const collectionRef = firestore.collection(collectionKey);
+  console.log(collectionRef);
+
+  /*
+   To ensure that our code is consistent, we will use 'batch right'. It will group all our calls together into one big request. Firestore gives batch obj. With this obj. we will add all our 'set' to it and we will 'fire-off' when we will be done adding all the calls to it. 
+   
+   We will loop over 'objectsToAdd' array using forEach method. Recap: forEach doesn't return a NEW array (not like 'map'). 
+  */
+  const batch = firestore.batch();
+  // Will loop through this array and 'batch' all the 'set' calls together.
+  objectsToAdd.forEach((obj) => {
+    /*
+    To get a document at the empty string. Will give a new document-reference in this collection and will randomly generate an ID.
+    */
+
+    const newDockRef = collectionRef.doc();
+    // Will set the value (obj). Will use 'batch' here.
+    batch.set(newDockRef, obj);
+  });
+
+  // Will fire-off 'batch' call. 'batch.commit()' will return a promise. So when commit succeds it will 'come back' and will resolve a void value (null value).
+  return await batch.commit();
+};
+
+// Will get the whole snapshot. Need to convert to an Obj. instead of array...
+export const convertCollectionsSnapshotToMap = (collections) => {
+  // 'docs' will give a query-snapshot array
+  const transformedCollection = collections.docs.map((doc) => {
+    // Will 'pull-out' title and items
+    const { title, items } = doc.data();
+
+    // 'encodeURI' is a JS method
+    return {
+      routeName: encodeURI(title.toLowerCase()),
+      id: doc.id,
+      title,
+      items,
+    };
+  });
+
+  // Will use 'reduce' fn. on transformedCollection array. Passing empty obj ({}) as initial accumulator.
+  return transformedCollection.reduce((accumulator, collection) => {
+    accumulator[collection.title.toLowerCase()] = collection;
+    return accumulator;
+  }, {});
+};
+
 firebase.initializeApp(config);
 
 // Will be able to use 'auth' constant anywhere related to authentication

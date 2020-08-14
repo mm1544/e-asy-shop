@@ -10,7 +10,7 @@ export const selectCollections = createSelector(
 // To convert an object to the array
 export const selectCollectionsForPreview = createSelector(
   [selectCollections],
-  // 'Object.keys' will get the feys of an object that is passed in, and returns them in the array
+  // 'Object.keys' will get the keys of an object that is passed in, and returns them in the array
   (collections) => Object.keys(collections).map((key) => collections[key])
 );
 
